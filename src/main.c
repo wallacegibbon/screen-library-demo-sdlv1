@@ -7,6 +7,9 @@
 #include <math.h>
 #include <stdio.h>
 
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 320
+
 void fancy_display(struct painter *painter) {
 	static int current_cnt = 0, step = 1;
 	struct point p;
@@ -34,10 +37,23 @@ void fancy_display(struct painter *painter) {
 
 void graphic_play(struct painter *painter) {
 	struct point p1, p2, size;
-	struct color_pair color_fb;
 	struct text_painter text_painter;
 
-	painter_clear(painter, 0);
+	painter_clear(painter, BLACK_24bit);
+
+	/// text drawing
+	text_painter_initialize(&text_painter, painter);
+
+	color_pair_initialize(&text_painter.color, RED_24bit, BLACK_24bit);
+	point_initialize(&text_painter.pos, 0, 0);
+
+	text_draw_string(&text_painter, "1.5 Programming!", 32);
+
+	color_pair_initialize(&text_painter.color, GREEN_24bit, BLACK_24bit);
+	point_initialize(&text_painter.pos, 0, 32);
+
+	text_draw_string(&text_painter, "1.5 Programming!", 16);
+
 	painter_size(painter, &size);
 
 	point_initialize(&p1, size.x / 2 - 50, size.y / 2 - 20);
@@ -46,19 +62,6 @@ void graphic_play(struct painter *painter) {
 
 	point_initialize(&p1, size.x / 2 - 50, size.y / 2 - 20);
 	painter_draw_circle(painter, p1, 5, MAGENTA_24bit);
-
-	/// text drawing
-	text_painter_initialize(&text_painter, painter);
-
-	color_pair_initialize(&text_painter.color, RED_24bit, 0);
-	point_initialize(&text_painter.pos, 0, 0);
-
-	text_draw_string(&text_painter, "1.5 Programming!", 32);
-
-	color_pair_initialize(&text_painter.color, GREEN_24bit, 0);
-	point_initialize(&text_painter.pos, 0, 32);
-
-	text_draw_string(&text_painter, "1.5 Programming!", 16);
 
 	point_initialize(&p1, 10, size.y / 2 - 20);
 	point_initialize(&p2, 10, size.y / 2 + 20);
@@ -81,11 +84,11 @@ int main() {
 
 	SDL_WM_SetCaption("1.5 Programming", NULL);
 
-	surface = SDL_SetVideoMode(640, 480, 0, SDL_ANYFORMAT);
+	surface = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 0, SDL_ANYFORMAT);
 	if (surface == NULL)
 		exit_info(2, "failed getting main display surface: %s\n", SDL_GetError());
 
-	sdlv1_initialize(&screen, surface, 640, 480);
+	sdlv1_initialize(&screen, surface, WINDOW_WIDTH, WINDOW_HEIGHT);
 	painter.drawing_board = (const struct drawing_i **)&screen;
 
 	graphic_play(&painter);
