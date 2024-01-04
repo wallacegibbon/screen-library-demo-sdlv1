@@ -36,7 +36,7 @@ void fancy_display(struct painter *painter) {
 }
 
 void graphic_play(struct painter *painter) {
-	struct point p1, p2, size;
+	struct point p1, p2, p3, size;
 	struct text_painter text_painter;
 
 	painter_clear(painter, BLACK_24bit);
@@ -66,6 +66,12 @@ void graphic_play(struct painter *painter) {
 	point_initialize(&p1, 10, size.y / 2 - 20);
 	point_initialize(&p2, 10, size.y / 2 + 20);
 	painter_draw_line(painter, p1, p2, WHITE_24bit);
+
+	point_initialize(&p1, 10, 20);
+	point_initialize(&p2, 10, size.y - 20);
+	point_initialize(&p3, size.x - 10, 10);
+
+	painter_draw_bezier(painter, p1, p2, p3, RED_24bit, 0);
 
 	painter_flush(painter);
 }
